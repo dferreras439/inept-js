@@ -1,0 +1,25 @@
+import init, { decrypt_epub } from "./pkg/your_wasm_module.js";
+
+async function decryptEpubFile(file) {
+    await init();
+    
+    const userKey = "BASE64_USER_KEY"; // Get from user input
+    const epubBytes = await file.arrayBuffer();
+    
+    try {
+        const decryptedEpub = decrypt_epub(userKey, new Uint8Array(epubBytes));
+        const blob = new Blob([decryptedEpub], { type: "application/epub+zip" });
+        const url = URL.createObjectURL(blob);
+        window.location.href = url; // Download decrypted EPUB
+    } catch (err) {
+        console.error("Decryption failed:", err);
+    }
+}
+
+
+/*
+
+Need to compile lib.rs to wasm. uh, but it has bugs
+
+
+*/
